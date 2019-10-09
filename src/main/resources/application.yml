@@ -1,0 +1,9 @@
+logging.level:
+  root: INFO
+  com.sbt.hakaton: DEBUG
+
+spring.cloud.stream.bindings:
+  input:
+    destination: non-unique
+  output:
+    destination: unique
