@@ -59,31 +59,16 @@ public class Task8Application {
         config.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
     }
 
-    @Bean("app1StreamBuilder")
+    @Bean
     public StreamsBuilderFactoryBean app1StreamBuilderFactoryBean() {
         Map<String, Object> config = new HashMap<>();
         setDefaults(config);
         config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
-        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "app1");
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream1");
         config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
         config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
         config.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor);
         return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(config));
 
     }
-
-
-
-
-/*    @Bean("app2StreamBuilder")
-    public StreamsBuilderFactoryBean app2StreamBuilderFactoryBean() {
-        Map<String, Object> config = new HashMap<>();
-        setDefaults(config);
-        config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
-        config.put(StreamsConfig.APPLICATION_ID_CONFIG, "app2");
-        config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
-        config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
-        config.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor);
-        return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(config));
-    }*/
 }

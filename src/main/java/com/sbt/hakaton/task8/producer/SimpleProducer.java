@@ -18,7 +18,8 @@ public class SimpleProducer<K, V> {
     }
 
     public void produce(K key, V value) {
-        LOG.debug("to:{}, key:{}, value:{}", initialTopic, key, value);
+        //LOG.debug("to:{}, key:{}, value:{}", initialTopic, key, value);
+        LOG.debug(value);
         if (key == null) {
             kafkaTemplate.send(initialTopic, value);
         } else {

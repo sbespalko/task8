@@ -15,8 +15,8 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @ComponentScan(basePackageClasses = MsgGenerator.class)
@@ -49,9 +49,10 @@ public class ProducerConfiguration {
     }
 
     @Bean
-    public ScheduledExecutorService scheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder()
-                .namingPattern("generator-%d")
-                .build());
+    public ExecutorService executorService() {
+        return Executors.newSingleThreadExecutor(
+                new BasicThreadFactory.Builder()
+                        .namingPattern("generator-%d")
+                        .build());
     }
 }

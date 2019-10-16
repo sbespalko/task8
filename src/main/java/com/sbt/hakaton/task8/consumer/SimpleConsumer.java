@@ -14,6 +14,7 @@ public class SimpleConsumer<K, V> {
 
     @KafkaListener(topics = "${topic.result}")
     public void consume(ConsumerRecord<K, V> record) {
-        LOG.debug("from:{}, key:{}, value:{}", resultTopic, record.key(), record.value());
+        //LOG.debug("from:{}, key:{}, value:{}", resultTopic, record.key(), record.value());
+        LOG.debug(record.value());
     }
 }
