@@ -8,7 +8,8 @@
         <RollingRandomAccessFile
                 name="producer"
                 fileName="log/producer.log"
-                filePattern="log/producer.%i.log">
+                filePattern="log/producer.%i.log"
+                immediateFlush="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %m%n"/>
             <filters>
 
@@ -22,7 +23,8 @@
         <RollingRandomAccessFile
                 name="consumer"
                 fileName="log/consumer.log"
-                filePattern="log/consumer.%i.log">
+                filePattern="log/consumer.%i.log"
+                immediateFlush="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %m%n"/>
             <Policies>
                 <OnStartupTriggeringPolicy/>

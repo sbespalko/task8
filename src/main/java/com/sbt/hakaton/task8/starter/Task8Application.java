@@ -34,7 +34,7 @@ public class Task8Application {
     @Value("${messaging.kafka-dp.brokers.url:localhost:9092}")
     private String brokersUrl;
 
-    @Value("${kafka-streams.base-dir:tmp/stream}")
+    @Value("${kafka-streams.base-dir:stream/tmp}")
     private String stateDir;
 
     public static void main(String[] args) {
