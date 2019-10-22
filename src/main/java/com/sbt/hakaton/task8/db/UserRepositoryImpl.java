@@ -8,19 +8,14 @@ import org.springframework.stereotype.Repository;
 public class UserRepositoryImpl implements RedisRepository<String> {
 
 
-    private HashOperations<byte[], Object, Object> hashOperations;
+    private HashOperations<String, Object, Object> hashOperations;
 
-    public UserRepositoryImpl(RedisTemplate<byte[], String> redisTemplate) {
+    public UserRepositoryImpl(RedisTemplate<String, String> redisTemplate) {
         this.hashOperations = redisTemplate.opsForHash();
     }
 
     @Override
-    public Boolean putIfAbsent(String value) {
-        return hashOperations.putIfAbsent(getHash(value), value, value);
+    public Boolean putIfAbsent(byte[] key, String value) {
+        return hashOperations.putIfAbsent("DOCS", key, null);
     }
-
-    private static byte[] getHash(String value) {
-        return value.getBytes();
-    }
-
 }
