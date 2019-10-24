@@ -20,7 +20,7 @@ public class SimpleConsumer<K, V> {
     @Value("${topic.result}")
     public String resultTopic;
 
-    @KafkaListener(topics = "${topic.result}", concurrency = "30")
+    @KafkaListener(topics = "${topic.result}")
     public void consume(ConsumerRecord<K, V> record) {
         //LOG.debug("from:{}, key:{}, value:{}", resultTopic, record.key(), record.value());
         LOG.debug("{};{};{}", counter.getAndIncrement(), record.timestamp(), record.value());

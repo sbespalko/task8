@@ -8,9 +8,8 @@
         <module>stream-redis</module>
         <module>consumer</module>
         <module>producer</module>
-        <module>complete-cycle</module>
-        <module>runner</module>
         <module>batch-stream-m</module>
+        <module>reactive-streams</module>
     </modules>
 
     <parent>
@@ -52,12 +51,6 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

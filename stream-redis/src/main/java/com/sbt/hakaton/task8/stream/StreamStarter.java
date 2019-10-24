@@ -2,6 +2,7 @@ package com.sbt.hakaton.task8.stream;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
 import com.sbt.hakaton.task8.db.RedisRepository;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -12,8 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -45,8 +44,8 @@ public class StreamStarter {
     private final int localCacheSize = Integer.MAX_VALUE / 16;
     @Value("${count.all:500000}")
     private long allCount;
-    private Map<String, byte[]> stringToHashCache = Maps.newHashMapWithExpectedSize(stringToHashCacheSize);
-    private Set<byte[]> localCache = Sets.newHashSetWithExpectedSize(localCacheSize);
+    private Map<String, String> stringToHashCache = Maps.newHashMapWithExpectedSize(stringToHashCacheSize);
+    private Set<String> localCache = Sets.newHashSetWithExpectedSize(localCacheSize);
 
     public StreamStarter(RedisRepository redis, StreamsBuilder streamsBuilder) {
         this.redis = redis;
@@ -80,7 +79,7 @@ public class StreamStarter {
                         LOG.warn("Handled: {}, TPS: {}", counter, counter.get() * 1000.0 / (finish.get() - start.get()));
 
                     }
-                    byte[] hash = getHash(value);
+                    String hash = getHash(value);
                     if (localCache.add(hash)) {
                         //int partitionNum = hash[0] % partitionsCount;
                         return redis.setIfAbsent(hash, value);
@@ -93,11 +92,11 @@ public class StreamStarter {
         return stream;
     }
 
-    private byte[] getHash(String key) {
+    private String getHash(String key) {
         return stringToHashCache.compute(key,
                 (k, v) -> v == null
                         //TODO функция хеширования - вставить нормальную. Мб вообще кешить не надо, если эта и так быстрая
-                        ? Arrays.copyOf(key.getBytes(StandardCharsets.UTF_8), 16)
+                        ? Hashing.murmur3_128().hashUnencodedChars(key).toString()
                         : v);
     }
 

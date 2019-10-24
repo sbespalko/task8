@@ -92,7 +92,8 @@ public class StreamConfiguration {
     }
 
     @Bean
-    public StreamStarter starter(RedisRepository repository, StreamsBuilder streamBuilder) {
+    public StreamStarter starter(RedisRepository repository,
+                                 StreamsBuilder streamBuilder) {
         return new StreamStarter(repository, streamBuilder);
     }
 

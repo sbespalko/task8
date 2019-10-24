@@ -1,3 +1,9 @@
+count:
+  uniques: 380735
 topic:
   initial: produce
-  result: consume
+  result: input
+messaging:
+  kafka-dp:
+    brokers:
+      url: 45.12.236.20:9093,45.12.236.21:9093,45.12.236.34:9093

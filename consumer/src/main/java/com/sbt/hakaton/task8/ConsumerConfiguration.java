@@ -18,7 +18,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -54,8 +53,8 @@ public class ConsumerConfiguration {
         ctx.close();
         LogManager.shutdown();
         TimeUnit.SECONDS.sleep(2);
-        DoublesConsumerChecker doublesConsumerChecker = new DoublesConsumerChecker();
-        doublesConsumerChecker.checkForDoubles(Paths.get("/home/sergey/IdeaProjects/task8/log/consumer.log"));
+        //DoublesConsumerChecker doublesConsumerChecker = new DoublesConsumerChecker();
+        //doublesConsumerChecker.checkForDoubles(Paths.get("/home/sergey/IdeaProjects/task8/log/consumer.log"));
     }
 
     @Bean
