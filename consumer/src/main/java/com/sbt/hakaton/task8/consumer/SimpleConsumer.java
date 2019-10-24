@@ -15,7 +15,7 @@ public class SimpleConsumer<K, V> {
 
     public final AtomicLong counter = new AtomicLong();
 
-    @Value("${count.uniques:37786}")
+    @Value("${count.uniques:380735}")
     private long allCount;
     @Value("${topic.result}")
     public String resultTopic;

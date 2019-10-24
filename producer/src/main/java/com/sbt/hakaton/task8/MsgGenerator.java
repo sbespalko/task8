@@ -28,7 +28,7 @@ public class MsgGenerator {
     }
 
     public void work() {
-        LOG.info("Started");
+        LOG.info("Started generation");
         startTime.set(System.currentTimeMillis());
         counter.set(0);
         String dd = RandomStringUtils.randomAlphanumeric(100, 1000);

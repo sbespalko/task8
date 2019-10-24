@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.FailOnInvalidTimestamp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @SpringBootApplication(scanBasePackageClasses = RedisConfiguration.class)
 public class StreamConfiguration {
@@ -43,7 +45,6 @@ public class StreamConfiguration {
         ConfigurableApplicationContext ctx = SpringApplication.run(StreamConfiguration.class, args);
         //new Scanner(System.in).nextLine();
         StreamStarter streamStarter = ctx.getBean(StreamStarter.class);
-        streamStarter.startProcessing();
         try {
             while (!streamStarter.finished()) {
                 synchronized (streamStarter) {
@@ -71,6 +72,7 @@ public class StreamConfiguration {
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokersUrl);
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, FailOnInvalidTimestamp.class);
         config.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
@@ -80,7 +82,7 @@ public class StreamConfiguration {
     public StreamsBuilderFactoryBean streamBuilderFactoryBean() {
         Map<String, Object> config = new HashMap<>();
         setDefaults(config);
-        config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
+        config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
         config.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream1");
         config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
         config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
@@ -92,5 +94,10 @@ public class StreamConfiguration {
     @Bean
     public StreamStarter starter(RedisRepository repository, StreamsBuilder streamBuilder) {
         return new StreamStarter(repository, streamBuilder);
+    }
+
+    @Bean
+    public KStream<String, String> stringKStream(StreamStarter starter) {
+        return starter.startProcessing();
     }
 }

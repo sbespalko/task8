@@ -38,11 +38,11 @@ public class StreamStarter {
     public final AtomicLong counter = new AtomicLong();
     //пачка коннектов к базам редис. почитать про кластеризацию
     //private RedisRepository<String>[] connections;
-    private final int stringToHashCacheSize = 1_000;
 
     //    @Value("${redis.partitions:5}")
 //    private int partitionsCount;
-    private final int localCacheSize = 1_000_000_000;
+    private final int stringToHashCacheSize = 1_000;
+    private final int localCacheSize = Integer.MAX_VALUE / 16;
     @Value("${count.all:500000}")
     private long allCount;
     private Map<String, byte[]> stringToHashCache = Maps.newHashMapWithExpectedSize(stringToHashCacheSize);
