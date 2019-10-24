@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %5p %m %n"/>
+        </Console>
+
+        <RollingRandomAccessFile
+                name="consumer"
+                fileName="log/consumer.log"
+                filePattern="log/consumer.%i.log"
+                immediateFlush="false">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="5"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.sbt.hakaton.task8.consumer" level="DEBUG" additivity="false">
+            <!--<AppenderRef ref="console"/>-->
+            <AppenderRef ref="consumer"/>
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>

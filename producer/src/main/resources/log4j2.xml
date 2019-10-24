@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %5p &lt;%t&gt; %m (%c{1.})%n"/>
+        </Console>
+
+        <RollingRandomAccessFile
+                name="producer"
+                fileName="log/producer.log"
+                filePattern="log/producer.%i.log"
+                immediateFlush="false">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="5"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.sbt.hakaton.task8.producer" level="DEBUG" additivity="false">
+            <!--<AppenderRef ref="console"/>-->
+            <AppenderRef ref="producer"/>
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>

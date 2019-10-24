@@ -31,4 +31,5 @@ build/
 .vscode/
 
 /tmp/
+/generated/
 /log/
