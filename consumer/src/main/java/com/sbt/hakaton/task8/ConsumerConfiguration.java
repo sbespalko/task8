@@ -38,9 +38,13 @@ public class ConsumerConfiguration {
         LOG.info("Read from topic: {}", consumer.resultTopic);
         try {
             while (!consumer.finished()) {
+                long start = System.currentTimeMillis();
+                long count = consumer.counter.get();
                 synchronized (consumer) {
                     consumer.wait(1000);
-                    LOG.info("Consumed msg: {}", consumer.counter);
+                    LOG.info("Consumed msg: {}. TPS: {}",
+                            consumer.counter,
+                            (consumer.counter.get() - count) * 1000.0 / (System.currentTimeMillis() - start));
 
                 }
             }
@@ -66,9 +70,16 @@ public class ConsumerConfiguration {
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
+        //config.put(ConsumerConfig.GROUP_ID_CONFIG, "team4developer");
         //config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        //config.put("sadfasdga", "");
+        config.put("security.protocol", "SSL");
+        config.put("ssl.truststore.location", "/home/sergey/team4/team4developer.jks");
+        config.put("ssl.truststore.password", "CVTqLn4nDjip");
+        config.put("ssl.keystore.location", "/home/sergey/team4/team4developer.jks");
+        config.put("ssl.keystore.password", "CVTqLn4nDjip");
+        config.put("ssl.key.password", "CVTqLn4nDjip");
+        config.put("ssl.endpoint.identification.algorithm", "");
 
     }
 

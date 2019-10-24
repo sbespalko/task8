@@ -15,12 +15,12 @@ public class SimpleConsumer<K, V> {
 
     public final AtomicLong counter = new AtomicLong();
 
-    @Value("${count.uniques:380735}")
+    @Value("${count.uniques:500000}")
     private long allCount;
     @Value("${topic.result}")
     public String resultTopic;
 
-    @KafkaListener(topics = "${topic.result}")
+    @KafkaListener(topics = "${topic.result}", concurrency = "30")
     public void consume(ConsumerRecord<K, V> record) {
         //LOG.debug("from:{}, key:{}, value:{}", resultTopic, record.key(), record.value());
         LOG.debug("{};{};{}", counter.getAndIncrement(), record.timestamp(), record.value());
