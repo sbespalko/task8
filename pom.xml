@@ -10,6 +10,7 @@
         <module>producer</module>
         <module>complete-cycle</module>
         <module>runner</module>
+        <module>batch-stream-m</module>
     </modules>
 
     <parent>
