@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -29,6 +30,9 @@ public class MsgGenerator {
         this.producer = producer;
         counter = new AtomicLong();
         startTime = new AtomicLong();
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleAtFixedRate(() -> LOG.info("Produced: {}", counter),
+                        1, 1, TimeUnit.SECONDS);
     }
 
     public void generate() {

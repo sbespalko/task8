@@ -26,8 +26,8 @@ public class ProducerConfiguration {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ConfigurableApplicationContext context = SpringApplication.run(ProducerConfiguration.class, args);
-        //context.getBean(MsgGenerator.class).generate();
-        context.getBean(MsgGenerator.class).load(Paths.get("/home/sergey/IdeaProjects/task8/log/consumer.log"));
+        context.getBean(MsgGenerator.class).generate();
+        //context.getBean(MsgGenerator.class).load(Paths.get("/home/sergey/IdeaProjects/task8/log/consumer.log"));
         context.close();
         LogManager.shutdown();
         TimeUnit.SECONDS.sleep(2);

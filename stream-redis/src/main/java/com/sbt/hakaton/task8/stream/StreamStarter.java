@@ -82,7 +82,7 @@ public class StreamStarter {
                     String hash = getHash(value);
                     if (localCache.add(hash)) {
                         //int partitionNum = hash[0] % partitionsCount;
-                        return redis.setIfAbsent(hash, value);
+                        return redis.setIfAbsent(hash, "");
                         //return connections[partitionNum].putIfAbsent(hash, value);
                     } else {
                         return false;

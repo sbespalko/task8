@@ -14,10 +14,7 @@ import reactor.kafka.sender.SenderRecord;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +29,7 @@ public class Pipe {
     @Value("${topic.result}")
     public String resultTopic;
     private Set<String> hashCache = new HashSet<>(1000_000);
-    private Map<String, String> valueToHashCache = new HashMap<>(1000);
+    private Map<String, String> valueToHashCache = new HashMap<>(1000_000);
     private AtomicLong counter = new AtomicLong();
 
     public Pipe(
@@ -54,20 +51,21 @@ public class Pipe {
         LOG.info("Pipe started");
         long start = System.currentTimeMillis();
         sender.send(receiver
-                .filter(this::isUnique)
-                .map(m -> SenderRecord.create(
-                        new ProducerRecord<>(
-                                resultTopic,
-                                (String) null,
-                                getHash(m.value())),
-                        m.receiverOffset()))
+                .buffer(Duration.of(100, ChronoUnit.MILLIS))
+                .map(this::isUnique)
+                .flatMap(buffer ->
+                        Flux.fromStream(buffer.stream()
+                                .map(m -> SenderRecord.create(
+                                        new ProducerRecord<>(
+                                                resultTopic,
+                                                (String) null,
+                                                getHash(m.value())),
+                                        m.receiverOffset()))))
                 .doOnError(e -> LOG.error("Send failed, terminating.", e))
                 .doOnNext(m -> m.correlationMetadata().acknowledge())
                 .doOnCancel(sender::close))
-                .bufferTimeout(1000, Duration.of(10, ChronoUnit.SECONDS))
-                .subscribe(m -> {
-                    counter.getAndIncrement();
-                    if (counter.get() >= 380735) {
+                .subscribe(msg -> {
+                    if (counter.incrementAndGet() >= 380060) {
                         long finish = System.currentTimeMillis();
                         LOG.info("Pipe finished");
                         LOG.info("Length: {}. TPS: {}",
@@ -84,15 +82,16 @@ public class Pipe {
                         : v);
     }
 
-    private boolean isUnique(ReceiverRecord<String, String> msg) {
-        String hash = getHash(msg.value());
-        if (hashCache.add(hash)) {
-            //TODO call redis
-            return redisRepository.setIfAbsent(hash, "");
-        } else {
-            return false;
+    private List<ReceiverRecord<String, String>> isUnique(List<ReceiverRecord<String, String>> msgs) {
+        List<ReceiverRecord<String, String>> allowed = new ArrayList<>(msgs.size());
+        for (ReceiverRecord<String, String> msg : msgs) {
+            String hash = getHash(msg.value());
+            if (hashCache.add(hash)) {
+                allowed.add(msg);
+                //return redisRepository.setIfAbsent(hash, "");
+            }
         }
-
+        return allowed;
     }
 
 }
